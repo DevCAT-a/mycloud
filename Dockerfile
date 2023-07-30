@@ -1,7 +1,7 @@
 FROM alpine
 
 RUN apk update && \
-    apk add --no-cache sudo qemu-system-x86_64 xz dbus-x11 curl firefox-esr mate-system-monitor git xfce4 xfce4-terminal wget openssh iproute2 x11vnc
+    apk add --no-cache sudo qemu-system-x86_64 xz dbus-x11 curl firefox-esr mate-system-monitor git xfce4 xfce4-terminal wget openssh iproute2
 
 RUN wget https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz && \
     curl -LO https://proot.gitlab.io/proot/bin/proot && \
@@ -19,7 +19,7 @@ RUN mkdir $HOME/.vnc && \
     echo 'cd' >> /luo.sh && \
     echo "su -l -c 'vncserver :2000 -geometry 1280x800'" >> /luo.sh && \
     echo 'cd /noVNC-1.2.0' >> /luo.sh && \
-    echo './utils/launch.sh --vnc localhost:7900 --listen 8900 & service ssh start' >> /luo.sh && \
+    echo './utils/launch.sh --vnc localhost:7900 --listen 8900' >> /luo.sh && \
     chmod 755 /luo.sh
 
 RUN echo "luo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -27,6 +27,6 @@ RUN echo "luo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
 
-EXPOSE 22 8900 5900
+EXPOSE 22 8900
 
-ENTRYPOINT x11vnc -display :0 -forever -shared -rfbport 5900 && /bin/sh /luo.sh
+ENTRYPOINT service ssh start && /bin/sh /luo.sh
