@@ -1,7 +1,7 @@
 FROM alpine
 
 RUN apk update && \
-    apk add --no-cache sudo qemu-system-x86_64 xz dbus-x11 curl firefox-esr mate-system-monitor git xfce4 xfce4-terminal tightvncserver wget openssh
+    apk add --no-cache sudo qemu-system-x86_64 xz dbus-x11 curl firefox-esr mate-system-monitor git xfce4 xfce4-terminal tightvncserver wget openssh iproute2
 
 RUN wget https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz && \
     curl -LO https://proot.gitlab.io/proot/bin/proot && \
@@ -29,4 +29,4 @@ RUN sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
 
 EXPOSE 22 8900
 
-CMD ["/bin/sh", "-c", "service ssh start && /bin/sh /luo.sh"]
+ENTRYPOINT service ssh start && /bin/sh /luo.sh
